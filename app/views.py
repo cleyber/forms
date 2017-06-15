@@ -1,19 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 
 from .models import User
+from .forms import IndexForm
 
 def index(request):
     if request.method == 'POST':
-        form = IndexForm(request.)
-        user = User()
-        user.name = request.POST.get('name')
-        user.last_name = request.POST.get('last_name')
-        user.save()
-        return render(request, 'app/response.html')
+        form = IndexForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('app:response')
+    else:
+        form = IndexForm()
 
-    return render(request, 'app/index.html')
+    return render(request, 'app/index.html', {'form': form})
 
 
 def response(request):
